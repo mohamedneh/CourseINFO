@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Informatique Interactive</title>
+  <style>
+    :root {
+      --bg: #081422;
+      --bg-soft: #0f1d2d;
+      --panel: rgba(15, 24, 36, 0.88);
+      --panel-strong: #122235;
+      --card: #162b40;
+      --line: rgba(145, 170, 196, 0.28);
+      --text: #ebf3ff;
+      --muted: #a7bdd8;
+      --primary: #50c4ff;
+      --primary-strong: #1295d7;
+      --accent: #89f0c7;
+      --amber: #ffc857;
+      --danger: #ff6b6b;
+      --purple: #ae8cff;
+      --shadow: 0 18px 40px rgba(0,0,0,.28);
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Tahoma", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(80,196,255,.16), transparent 20%),
+        radial-gradient(circle at bottom left, rgba(137,240,199,.12), transparent 18%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    body.presentation-mode .sidebar { transform: translateX(110%); }
+    body.presentation-mode .topbar { padding-inline: 1rem; }
+    body.presentation-mode .main-panel { margin-inline: 0; }
+    a { color: inherit; }
+
+    .app {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: relative;
+      background: rgba(7, 17, 29, 0.96);
+      border-left: 1px solid var(--line);
+      padding: 1rem 0.85rem 1rem 0.5rem;
+      transition: transform .2s ease;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 0.9rem 1rem;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 0.75rem;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+      font-size: 1.2rem;
+      box-shadow: 0 8px 20px rgba(80,196,255,.35);
+    }
+
+    .brand h1 {
+      font-size: 1rem;
+      margin: 0;
+      line-height: 1.35;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--muted);
+      font-size: .68rem;
+    }
+
+    .nav-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .nav-item {
+      width: 100%;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text);
+      text-align: right;
+      padding: 0.8rem 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: .2s ease;
+      font-weight: 600;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background: rgba(80,196,255,0.12);
+      border-color: rgba(80,196,255,0.28);
+    }
+
+    .nav-item .badge {
+      color: var(--muted);
+      font-size: .72rem;
+    }
+
+    .main-panel {
+      padding: 0.8rem 1rem 1.4rem;
+      margin-inline: 0.5rem;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      background: rgba(10, 22, 34, 0.72);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 0.8rem 1rem;
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      backdrop-filter: blur(15px);
+      z-index: 15;
+    }
+
+    .topbar-left { display: flex; align-items: center; gap: 0.8rem; }
+    .mini-dots {
+      width: 42px; height: 42px; display: grid; place-items: center;
+      background: rgba(80,196,255,.12); border: 1px solid rgba(80,196,255,.3); border-radius: 12px;
+      font-size: 1.2rem;
+    }
+    .title-block h2 {
+      margin: 0; font-size: 1.05rem;
+    }
+    .title-block small {
+      color: var(--muted);
+      font-size: .74rem;
+    }
+
+    .topbar-actions {
+      display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap;
+    }
+
+    .btn, button {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.02);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 0.7rem 0.9rem;
+      cursor: pointer;
+      font-weight: 700;
+      transition: .2s ease;
+    }
+    .btn:hover, button:hover { transform: translateY(-1px); }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+      color: #061722;
+      border: none;
+    }
+    .btn-success {
+      background: linear-gradient(135deg, var(--accent), #4fd5b3);
+      color: #06271d;
+      border: none;
+    }
+    .btn-warning {
+      background: linear-gradient(135deg, var(--amber), #fda463);
+      color: #2b1800;
+      border: none;
+    }
+    .btn-danger {
+      background: linear-gradient(135deg, #ff8c8c, var(--danger));
+      color: #fff;
+      border: none;
+    }
+
+    .progress-shell {
+      margin: 1rem 0 1.2rem;
+      display: flex; align-items: center; gap: 1rem;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 0.85rem 1rem;
+    }
+    .progress-bar {
+      flex: 1;
+      height: 10px; border-radius: 999px; background: rgba(255,255,255,0.06); overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--accent));
+      border-radius: 999px; transition: width .25s ease;
+    }
+
+    .content {
+      background: rgba(17,28,41,0.8);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 1rem;
+      min-height: 70vh;
+    }
+
+    .slides {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .slide {
+      display: none;
+      background: linear-gradient(180deg, rgba(18,32,48,.78), rgba(9,18,28,.78));
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 1rem 1.1rem;
+    }
+    .slide.active { display: block; }
+
+    .slide-header {
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      padding-bottom: .75rem; border-bottom: 1px solid var(--line); margin-bottom: 1rem;
+    }
+    .slide-header h3 { margin: 0; font-size: 1.15rem; }
+    .slides-meta { color: var(--muted); font-size: .76rem; }
+
+    .two-col { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+
+    .card {
+      background: rgba(255,255,255,.02);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 1rem;
+    }
+
+    .card h4 {
+      margin: 0 0 .5rem; font-size: 1rem;
+    }
+    .card p, .card li, .card td {
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: .95rem;
+    }
+    .card ul { padding-right: 1.1rem; margin: 0; }
+    .pill {
+      display: inline-flex; align-items:center; gap: .35rem;
+      background: rgba(80,196,255,.12); color: var(--primary); border: 1px solid rgba(80,196,255,.28);
+      border-radius: 999px; padding: .35rem .7rem; font-weight: 700; font-size: .72rem;
+    }
+    .pill.success { background: rgba(137,240,199,.12); color: var(--accent); border-color: rgba(137,240,199,.28); }
+    .pill.warn { background: rgba(255,200,87,.12); color: var(--amber); border-color: rgba(255,200,87,.32); }
+    .pill.danger { background: rgba(255,107,107,.12); color: #ff9999; border-color: rgba(255,107,107,.24); }
+
+    .stat-box {
+      border-radius: 14px; padding: 0.8rem; background: rgba(255,255,255,.02); border: 1px solid var(--line);
+    }
+    .stat-box strong { font-size: 1.5rem; display: block; }
+
+    .obj-list { list-style: none; padding: 0; margin: 0; display: grid; gap: .6rem; }
+    .obj-list li { display: flex; align-items: flex-start; gap: .5rem; }
+    .obj-list li::before {
+      content: "✓"; color: var(--accent); font-weight: 700; margin-top: 0.08rem;
+    }
+
+    table {
+      width: 100%; border-collapse: collapse; margin-top: .5rem; 
+    }
+    th, td {
+      border: 1px solid var(--line); padding: .65rem .7rem; text-align: right; vertical-align: top;
+    }
+    th { background: rgba(255,255,255,.03); color: var(--text); }
+
+    .mini-visual {
+      background: linear-gradient(135deg, rgba(80,196,255,.08), rgba(174,140,255,.09));
+      border: 1px solid var(--line);
+      border-radius: 18px; padding: 1rem;
+      min-height: 180px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cpu-diagram {
+      position: relative; width: min(100%, 480px); height: 200px; background: rgba(0,0,0,.1); border: 1px solid var(--line); border-radius: 16px;
+    }
+    .cpu-box, .ram-box, .disk-box, .input-box, .output-box {
+      position: absolute; display: grid; place-items: center; border-radius: 16px; padding: 0.5rem; font-weight: 700;
+      border: 1px solid rgba(255,255,255,.1); box-shadow: inset 0 0 12px rgba(255,255,255,0.04);
+    }
+    .cpu-box { inset: 64px auto auto 180px; width: 115px; height: 80px; background: rgba(80,196,255,.15); } 
+    .ram-box { inset: 25px auto auto 30px; width: 112px; height: 70px; background: rgba(137,240,199,.12); }
+    .disk-box { inset: 25px 30px auto auto; width: 120px; height: 70px; background: rgba(255,200,87,.12); }
+    .input-box { inset: 138px auto auto 20px; width: 98px; height: 48px; background: rgba(174,140,255,.12); }
+    .output-box { inset: 138px 20px auto auto; width: 98px; height: 48px; background: rgba(255,107,107,.12); }
+    .cpu-arrow {
+      position: absolute; top: 94px; left: 140px; right: 140px; height: 2px; background: rgba(255,255,255,.18);
+    }
+
+    .explorer {
+      display: grid; grid-template-columns: 220px 1fr; gap: 1rem; min-height: 320px;
+    }
+    .explorer-tree, .explorer-panel {
+      background: rgba(255,255,255,.02); border: 1px solid var(--line); border-radius: 16px; padding: 0.8rem;
+    }
+    .tree-root {
+      list-style: none; padding: 0; margin: 0; display: grid; gap: .5rem;
+    }
+    .tree-root li { padding: .45rem .6rem; border-radius: 10px; background: rgba(255,255,255,.02); border: 1px solid transparent; }
+    .tree-root li.active { border-color: rgba(80,196,255,.3); background: rgba(80,196,255,.08); }
+
+    .file-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(120px,1fr)); gap: .8rem; margin-top: .8rem;
+    }
+    .file-item {
+      padding: .8rem; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.02); text-align: center;
+    }
+    .file-item .icon { font-size: 2rem; }
+    .file-item .name { display: block; margin-top: .4rem; font-size: .8rem; }
+
+    .quiz-box {
+      border: 1px solid var(--line); border-radius: 16px; background: rgba(255,255,255,.02); padding: 1rem; margin-top: 1rem;
+    }
+    .quiz-box h4 { margin-top: 0; }
+    .option {
+      display: block; width: 100%; text-align: right; border: 1px solid var(--line); background: rgba(255,255,255,.02);
+      border-radius: 12px; padding: .75rem .8rem; margin: .45rem 0; color: var(--text); cursor: pointer; font-weight: 600;
+    }
+    .option.correct { background: rgba(137,240,199,.14); border-color: rgba(137,240,199,.35); }
+    .option.wrong { background: rgba(255,107,107,.14); border-color: rgba(255,107,107,.3); }
+    .quiz-result { margin-top: .7rem; font-weight: 700; }
+
+    .task-list { list-style: none; padding: 0; margin: 0; display: grid; gap: .6rem; }
+    .task-list li { display: flex; align-items: flex-start; gap: .55rem; }
+    .task-list li::before { content: "•"; color: var(--primary); font-size: 1.5rem; line-height: 1; }
+
+    .legend { display: flex; flex-wrap: wrap; gap: .6rem; margin: .7rem 0 0; }
+
+    .bottom-nav {
+      display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-top: 1rem; padding-top: .8rem; border-top: 1px solid var(--line);
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 980px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .two-col, .grid-3, .grid-4, .explorer { grid-template-columns: 1fr; }
+      .topbar { padding: 0.7rem 0.8rem; }
+      .title-block h2 { font-size: .95rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">💻</div>
+        <div>
+          <h1>Informatique Interactive</h1>
+          <small>مقياس الإعلام الآلي</small>
+        </div>
+      </div>
+      <ul class="nav-list" id="unit-nav"></ul>
+    </aside>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="mini-dots">📚</div>
+          <div class="title-block">
+            <h2 id="top-title">مقدمة المقياس</h2>
+            <small id="top-subtitle">سنة أولى - أدب عربي</small>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <button id="toggle-sidebar" class="btn">قائمة الوحدات</button>
+          <button id="presentation-mode" class="btn">وضع العرض</button>
+          <button id="fullscreen" class="btn-primary">ملء الشاشة</button>
+        </div>
+      </header>
+
+      <div class="progress-shell">
+        <div style="min-width: 110px; color: var(--muted); font-weight: 700;">التقدم</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div id="progress-text" style="min-width: 90px; text-align: left; color: var(--primary); font-weight: 700;">0%</div>
+      </div>
+
+      <div class="content">
+        <div id="slides-container" class="slides"></div>
+
+        <div class="bottom-nav">
+          <div>
+            <button id="prev-btn" class="btn">السابق</button>
+            <button id="next-btn" class="btn-primary">التالي</button>
+          </div>
+          <div>
+            <button id="reset-progress" class="btn-warning">إعادة التهيئة</button>
+            <button id="show-help" class="btn">اختصارات</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const state = {
+      unitIndex: 0,
+      slideIndex: 0,
+      totalSlides: 0,
+      presentationMode: false,
+      storeKey: 'informatiqueInteractiveState'
+    };
+
+    const units = [
+      {
+        title: 'الوحدة 1: مدخل إلى الإعلام الآلي والحاسوب',
+        intro: 'أساسيات الحوسبة وفرق البيانات عن المعلومات',
+        slides: [
+          {
+            title: 'ما هو الإعلام الآلي؟',
+            html: `
+              <div class="two-col">
+                <div class="card">
+                  <span class="pill">الهدف</span>
+                  <h4>فهم معنى Informatique ومجالاته</h4>
+                  <p>يعرف الطالب أن الإعلام الآلي لا يقتصر على استخدام الحاسوب فقط، بل هو العلم الذي يدرس معالجة البيانات وتحويلها إلى معلومات مفيدة.</p>
+                  <ul>
+                    <li>البيانات: أرقام أو كلمات أو صور غير منظمة.</li>
+                    <li>المعلومة: بيانات تم تنظيمها وتحليلها وتفسيرها.</li>
+                    <li>الحاسوب: آلة رقمية تتابع التعليمات وتنفيذ العمليات.</li>
+                  </ul>
+                </div>
+                <div class="card">
+                  <span class="pill success">مثال جامعي</span>
+                  <h4>بحث في الأدب العربي</h4>
+                  <p>إذا جمع الطالب أسماء 50 نصًا أدبيًا، فإن تلك الأسماء تمثل بيانات. عند ترتيبها، وتصنيفها حسب المؤلف أو العصر، تصبح معلومات قابلة للاستخدام في مقال أو مذكّرة.</p>
+                </div>
+              </div>
+            `
+          },
+          {
+            title: 'مكونات الحاسوب',
+            html: `
+              <div class="two-col">
+                <div class="card">
+                  <span class="pill">التعريف</span>
+                  <h4>Hardware و Software</h4>
+                  <p><strong>Hardware</strong>: كل مكونات الجهاز المادية مثل الشاشة، لوحة المفاتيح، المعالج، الذاكرة، القرص الصلب.</p>
+                  <p><strong>Software</strong>: البرامج والخدمات التي تدير هذه المكونات، مثل Windows، Word، Excel.</p>
+                </div>
+                <div class="card">
+                  <span class="pill warn">مخطط مبسط</span>
+                  <div class="mini-visual">
+                    <div class="cpu-diagram">
+                      <div class="ram-box">RAM</div>
+                      <div class="disk-box">SSD/HDD</div>
+                      <div class="cpu-arrow"></div>
+                      <div class="cpu-box">CPU</div>
+                      <div class="input-box">Input</div>
+                      <div class="output-box">Output</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `
+          },
+          {
+            title: 'أنواع الحواسيب',
+            html: `
+              <div class="grid-4">
+                <div class="card">
+                  <h4>الحاسوب الشخصي</h4>
+                  <p>مستخدم فردي في الدراسة والعمل. المثال: Laptop أو Desktop.</p>
+                </div>
+                <div class="card">
+                  <h4>الخادم</h4>
+                  <p>يخدم عدة مستخدمين في نفس الوقت، ويستخدم في الأنظمة الجامعية.</p>
+                </div>
+                <div class="card">
+                  <h4>الحواسيب العملاقة</h4>
+                  <p>مخصصة للبحث العلمي أو المحاكاة، وتعمل بسرعات عالية جدًا.</p>
+                </div>
+                <div class="card">
+                  <h4>الأنظمة المضمنة</h4>
+                  <p>موجودة داخل أجهزته أخرى مثل الهاتف الذكي أو الغسالة أو الطابعة.</p>
+                </div>
+              </div>
+            `
+          },
+          {
+            title: 'دورة الإدخال والمعالجة والإخراج',
+            html: `
+              <div class="two-col">
+                <div class="card">
+                  <span class="pill">النموذج</span>
+                  <h4>IPOS</h4>
+                  <ul>
+                    <li><strong>Input:</strong> إدخال البيانات عبر لوحة المفاتيح أو الفأرة.</li>
+                    <li><strong>Processing:</strong> المعالج ينجز الحسابات والمنطق.</li>
+                    <li><strong>Output:</strong> عرض النتائج على الشاشة أو الطباعة.</li>
+                    <li><strong>Storage:</strong> حفظ البيانات في RAM أو SSD.</li>
+                  </ul>
+                </div>
+                <div class="card">
+                  <span class="pill success">مثال</span>
+                  <p>عند كتابة اسم طالب في Word ثم حفظ الملف، يحدث:</p>
+                  <p>إدخال النص → معالجة في المعالج → تخزين في القرص → عرض على الشاشة.</p>
+                </div>
+              </div>
+            `
+          }
+        ]
+      },
+      {
+        title: 'الوحدة 2: التعرف على نظام التشغيل Windows',
+        intro: 'دور نظام التشغيل، وظائفه، وتطور Windows',
+        slides: [
+          {
+            title: 'ما هو نظام التشغيل؟',
+            html: `
+              <div class="two-col">
+                <div class="card">
+                  <span class="pill">التعريف</span>
+                  <h4>مدير الحاسوب</h4>
+                  <p>نظام التشغيل هو برنامج أساسي يربط المستخدم بالعتاد، ويرتب العمليات بين البرامج والأجهزة. يعمل كوسيط بين الإنسان والآلة.</p>
+                  <ul>
+                    <li>إدارة الذاكرة</li>
+                    <li>توزيع الوقت والمهام</li>
+                    <li>إدارة الملفات</li>
+                    <li>إدارة الإدخال والإخراج</li>
+                  </ul>
+                </div>
+                <div class="card">
+                  <span class="pill success">أمثلة</span>
+                  <p>عند فتح Word، فإن نظام التشغيل يخصص مساحة للبرنامج، يطلب من المعالج التنفيذ، ويعرض النتيجة على الشاشة.</p>
+                </div>
+              </div>
+            `
+          },
+          {
+            title: 'خط زمني لأهم إصدارات Windows',
+            html: `
+              <table>
+                <thead>
+                  <tr><th>الإصدار</th><th>السنة</th><th>الميزة العامة</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Windows 1.0</td><td>1985</td><td>واجهة رسومية مبكرة فوق MS-DOS.</td></tr>
+                  <tr><td>Windows 95</td><td>1995</td><td>زر Start، شريط المهام، دعم أكبر.</td></tr>
+                  <tr><td>Windows XP</td><td>2001</td><td>استقرار عالي وواجهة مألوفة.</td></tr>
+                  <tr><td>Windows 7</td><td>2009</td><td>أحد أكثر الإصدارات شعبية.</td></tr>
+                  <tr><td>Windows 10</td><td>2015</td><td>تحديثات مستمرة ومزايا متقدمة.</td></tr>
+                  <tr><td>Windows 11</td><td>2021</td><td>واجهة حديثة، تصميم Fluent، ودمج AI.</td></tr>
+                </tbody>
+              </table>
+            `
+          },
+          {
+            title: 'أهمية التحديثات والأمان',
+            html: `
+              <div class="two-col">
+                <div class="card">
+                  <span class="pill warn">لماذا التحديث؟</span>
+                  <ul>
+                    <li>إصلاح الثغرات الأمنية</li>
+                    <li>تحسين الأداء</li>
+                    <li>التوافق مع الأجهزة والبرامج</li>
+                    <li>إضافة ميزات جديدة</li>
+                  </ul>
+                </div>
+                <div class="card">
+                  <span class="pill danger">تنبيه</span>
+                  <p>قد يختلف موقع بعض إعدادات النظام حسب النسخة أو صلاحيات المستخدم، لذلك يجب الاعتماد على السلوك العام ثم التحقق من واجهة الإصدار الحالي.</p>
+                </div>
+              </div>
+            `
+          }
+        ]
+      },
+      {
+        title: 'الوحدة 3: بدء تشغيل Windows واستعماله الأولي',
+        intro: 'الإقلاع، تسجيل الدخول، وإدارة الجلسة',
+        slides: [
+          {
+            title: 'إجراءات الإقلاع',
+            html: `
+              <div class="card">
+                <span class="pill">خطوات التشغيل</span>
+                <ol>
+                  <li>تشغيل الطاقة</li>
+                  <li>يكشف BIOS/UEFI عن الأجهزة الأساسية</li>
+                  <li>يبدأ Windows Boot Manager</li>
+                  <li>يظهر شاشة تسجيل الدخول</li>
+                  <li>يتم تحميل سطح المكتب</li>
+                </ol>
+              </div>
+            `
+          },
+          {
+            title: 'Restart و Shut down و Sleep',
+            html: `
+              <div class="grid-3">
+                <div class="card"><h4>إعادة التشغيل</h4><p>Restart: إغلاق كامل ثم تشغيل مرة أخرى، Useful عند تحديث النظام أو إصلاحات البرامج.</p></div>
+                <div class="card"><h4>إيقاف التشغيل</h4><p>Shut down: إغلاق الجلسة مع إطفاء الجهاز بالكامل.</p></div>
+                <div class="card"><h4>Sleep</h4><p>حالة سكون مؤقتة تحفظ العمل وتشغل الجهاز بسرعة عند الاستئناف.</p></div>
+              </div>
+            `
+          },
+          {
+            title: 'تمرين ترتيب خطوات',
+            html: `
+              <div class="quiz-box" data-quiz="boot-order">
+                <h4>رتب الخطوات التالية من أول إلى آخر:</h4>
+                <button class="option" data-correct="false">التحقق من شريط المهام</button>
+                <button class="option" data-correct="true">تشغيل الجهاز</button>
+                <button class="option" data-correct="false">فتح تطبيق جديد</button>
+                <button class="option" data-correct="true">تحميل النظام</button>
+                <div class="quiz-result"></div>
+              </div>
+            `
+          }
+        ]
+      },
+      {
+        title: 'الوحدة 4: واجهة Windows وخصائص النظام',
+        intro: 'سطح المكتب، شريط المهام، والأيقونات',
+        slides: [
+          {
+            title: 'سطح المكتب Desktop',
+            html: `
+              <div class="two-col">
+                <div class="card">
+                  <span class="pill">مكونات أساسية</span>
+                  <ul>
+                    <li>سطح المكتب</li>
+                    <li>Start</li>
+                    <li>Taskbar</li>
+                    <li>الإشعارات</li>
+                    <li>نوافذ التطبيقات</li>
+                  </ul>
+                </div>
+                <div class="card">
+                  <span class="pill success">مثال</span>
+                  <p>عند فتح المتصفح، يظهر شريط مهام جديد يمثل التطبيق. يمكن تصغيره أو تكبيره أو إغلاقه حسب الحاجة.</p>
+                </div>
+              </div>
+            `
+          },
+          {
+            title: 'المحاكاة: سطح مكتب تعليمي',
+            html: `
+              <div class="card">
+                <h4>اضغط على الأيقونات التجريبية</h4>
+                <div class="mini-visual" style="display:block; padding:0.75rem;">
+                  <div style="background:linear-gradient(135deg,#111b2a,#1d3b61); border:1px solid var(--line); border-radius:18px; padding:0.8rem; min-height:200px; position:relative;">
+                    <div style="display:flex; gap:0.7rem; align-items:flex-start; flex-wrap:wrap;">
+                      <button class="sim-icon" data-info="هذا الكمبيوتر" style="background:rgba(255,255,255,.02); border:1px solid var(--line); border-radius:12px; width:90px; padding:0.6rem; color:var(--text);">💻<br><small>هذا الكمبيوتر</small></button>
+                      <button class="sim-icon" data-info="سلة المحذوفات" style="background:rgba(255,255,255,.02); border:1px solid var(--line); border-radius:12px; width:90px; padding:0.6rem; color:var(--text);">🗑️<br><small>سلة المحذوفات</small></button>
+                      <button class="sim-icon" data-info="ملفات الطالب" style="background:rgba(255,255,255,.02); border:1px solid var(--line); border-radius:12px; width:90px; padding:0.6rem; color:var(--text);">👤<br><small>ملفات الطالب</small></button>
+                    </div>
+                    <div id="sim-output" style="margin-top:1rem; padding:0.7rem; background:rgba(0,0,0,.18); border-radius:12px; border:1px solid var(--line); color:var(--muted); min-height:60px;">اختر أيقونة لتتعرف على أهميتها.</div>
+                  </div>
+                </div>
+              </div>
+            `
+          },
+          {
+            title: 'تمرين عملي',
+            html: `
+              <div class="card">
+                <span class="pill">تمرين</span>
+                <ul>
+                  <li>افتح قائمة Start</li>
+                  <li>ابحث عن «الإعدادات»</li>
+                  <li>افتح إعدادات العرض أو اللغة</li>
+                  <li>لاحظ أن بعض الخيارات تختلف حسب الإصدار</li>
+                </ul>
+              </div>
+            `
+          }
+        ]
+      },
+      {
+        title: 'الوحدة 5: الملفات والمجلدات',
+        intro: 'تحديد الملف، المجلد، الاسم، الامتداد، والمسار',
+        slides: [
+          {
+            title: 'الملف والمجلد والمسار',
+            html: `
+              <div class="two-col">
+                <div class="card">
+                  <span class="pill">التعريفات</span>
+                  <ul>
+                    <li><strong>File:</strong> كائن يحتوي بيانات أو نصًا أو صورة.</li>
+                    <li><strong>Folder:</strong> حاوية تنظم الملفات والمجلدات.</li>
+                    <li><strong>Path:</strong> الموقع الذي يوجد فيه الملف داخل النظام.</li>
+                    <li><strong>Extension:</strong> امتداد الملف مثل .docx أو .xlsx.</li>
+                  </ul>
+                </div>
+                <div class="card">
+                  <span class="pill success">قواعد تسمية</span>
+                  <p>يجب أن يكون الاسم واضحًا، لا يشتمل على رموز غير مناسبة، ولا يُكرّس لخلط المفاهيم.</p>
+                </div>
+              </div>
+            `
+          },
+          {
+            title: 'العمليات الأساسية',
+            html: `
+              <div class="grid-4">
+                <div class="card"><h4>إنشاء</h4><p>إنشاء مجلد أو ملف جديد</p></div>
+                <div class="card"><h4>النسخ</h4><p>Ctrl+C ثم Ctrl+V</p></div>
+                <div class="card"><h4>النقل</h4><p>Ctrl+X ثم Ctrl+V</p></div>
+                <div class="card"><h4>الإلغاء</h4><p>Ctrl+Z</p></div>
+              </div>
+            `
+          },
+          {
+            title: 'تمرين على الترتيب',
+            html: `
+              <div class="card">
+                <span class="pill warn">سؤال</span>
+                <p>إذا كان لديك ملف «مقال.docx» في مجلد «Documents»، ثم قمت بنسخه إلى مجلد آخر، ما الذي يحدث فعليًا؟</p>
+                <div class="quiz-box" data-quiz="copy-file">
+                  <button class="option" data-correct="false">يتم حذف الملف الأصلي فقط.</button>
+                  <button class="option" data-correct="true">يتم إنشاء نسخة جديدة في الموقع الجديد.</button>
+                  <button class="option" data-correct="false">يتم تعديل امتداد الملف تلقائيًا.</button>
+                  <div class="quiz-result"></div>
+                </div>
+              </div>
+            `
+          }
+        ]
+      },
+      {
+        title: 'الوحدة 6: مستكشف الملفات File Explorer',
+        intro: 'تصفح، فرز، البحث، وحذف الملفات',
+        slides: [
+          {
+            title: 'واجهة المستكشف',
+            html: `
+              <div class="explorer">
+                <div class="explorer-tree">
+                  <ul class="tree-root">
+                    <li class="active">📁 هذا الكمبيوتر</li>
+                    <li>📁 المستندات</li>
+                    <li>📁 الصور</li>
+                    <li>📁 الفيديو</li>
+                  </ul>
+                </div>
+                <div class="explorer-panel">
+                  <h4>المجلدات والملفات الافتراضية</h4>
+                  <div class="file-grid">
+                    <div class="file-item"><div class="icon">📄</div><span class="name">مذكرة.docx</span></div>
+                    <div class="file-item"><div class="icon">📊</div><span class="name">جدول.xlsx</span></div>
+                    <div class="file-item"><div class="icon">📽️</div><span class="name">عرض.pptx</span></div>
+                    <div class="file-item"><div class="icon">🖼️</div><span class="name">صورة.jpg</span></div>
+                  </div>
+                </div>
+              </div>
+            `
+          },
+          {
+            title: 'محاكاة إدارة الملفات',
+            html: `
+              <div class="card">
+                <div style="display:flex; gap:.5rem; flex-wrap:wrap; margin-bottom:.7rem;">
+                  <button class="btn-success" id="create-folder-demo">إنشاء مجلد</button>
+                  <button class="btn" id="rename-demo">إعادة تسمية</button>
+                  <button class="btn-danger" id="delete-demo">حذف</button>
+                  <button class="btn-warning" id="reset-demo">إعادة تعيين</button>
+                </div>
+                <div id="demo-explorer" class="file-grid"></div>
+              </div>
+            `
+          },
+          {
+            title: 'مراحل التقييم',
+            html: `
+              <div class="card">
+                <span class="pill">المعايير</span>
+                <ul>
+                  <li>هل تم إنشاء المجلد بنجاح؟</li>
+                  <li>هل تم تسمية الملف بشكل واضح؟</li>
+                  <li>هل تم استخدام النسخ والنقل بشكل صحيح؟</li>
+                  <li>هل تم إظهار رسالة نجاح أو خطأ عند الحاجة؟</li>
+                </ul>
+              </div>
+            `
+          }
+        ]
+      },
+      {
+        title: 'الوحدة 7: امتدادات الملفات وأنواع المستندات',
+        intro: 'كيف نعرف نوع الملف؟ ما الصيغ المناسبة؟',
+        slides: [
+          {
+            title: 'الامتداد يعني نوع الملف',
+            html: `
+              <div class="grid-3">
+                <div class="card"><h4>.txt</h4><p>نص عادي، مناسب للملاحظات البسيطة.</p></div>
+                <div class="card"><h4>.docx</h4><p>مستند نصي من Word مع تنسيقات متقدمة.</p></div>
+                <div class="card"><h4>.pdf</h4><p>صيغة ثابتة للعرض والتبادل.</p></div>
+                <div class="card"><h4>.xlsx</h4><p>جدول بيانات مع حسابات.</p></div>
+                <div class="card"><h4>.pptx</h4><p>عرض تقديمي.</p></div>
+                <div class="card"><h4>.jpg</h4><p>صورة ثابتة.</p></div>
+              </div>
+            `
+          },
+          {
+            title: 'لعبة المطابقة',
+            html: `
+              <div class="quiz-box" data-quiz="extension-match">
+                <h4>أي صيغة مناسبة لبحث جامعي؟</h4>
+                <button class="option" data-correct="true">PDF</button>
+                <button class="option" data-correct="false">.jpg</button>
+                <button class="option" data-correct="false">.mp3</button>
+                <div class="quiz-result"></div>
+              </div>
+            `
+          },
+          {
+            title: 'تنبيه مهم',
+            html: `
+              <div class="card">
+                <span class="pill danger">تنبيه</span>
+                <p>الامتداد لا يضمن سلامة الملف أو محتواه دائمًا، فبعض الملفات قد تكون ملوِّثة أو تالفة أو مرتبطة ببرنامج غير مناسب. لذلك يجب الاحتياط بالتأكد من المصدر.</p>
+              </div>
+            `
+          }
+        ]
+      },
+      {
+        title: 'الوحدة 8: التعرف على Microsoft Office أو Microsoft 365',
+        intro: 'Word، Excel، PowerPoint',
+        slides: [
+          {
+            title: 'Word',
+            html: `
+              <div class="two-col">
+                <div class="card">
+                  <span class="pill">المهمة</span>
+                  <ul>
+                    <li>إعداد عنوان</li>
+                    <li>كتابة فقرة</li>
+                    <li>تحديد المحاذاة</li>
+                    <li>إنشاء قائمة</li>
+                    <li>حفظ الملف بصيغة DOCX</li>
+                  </ul>
+                </div>
+                <div class="card">
+                  <span class="pill success">تطبيق</span>
+                  <p>يمكن للطالب كتابة مقدمة بحث أو مذكرة قصيرة في Word مع تنسيق العنوان، الفقرة، الهوامش، ومؤشرات تنظيمية.</p>
+                </div>
+              </div>
+            `
+          },
+          {
+            title: 'Excel',
+            html: `
+              <div class="card">
+                <table>
+                  <thead><tr><th>الاسم</th><th>المعدل</th><th>النتيجة</th></tr></thead>
+                  <tbody>
+                    <tr><td>سارة</td><td>18</td><td>16</td></tr>
+                    <tr><td>أحمد</td><td>17</td><td>15</td></tr>
+                    <tr><td>ليلى</td><td>20</td><td>18</td></tr>
+                  </tbody>
+                </table>
+                <p style="margin-top: .7rem;">يمكن استخدام SUM أو AVERAGE لحساب المتوسط العام للنتائج.</p>
+              </div>
+            `
+          },
+          {
+            title: 'PowerPoint',
+            html: `
+              <div class="card">
+                <span class="pill">تمثيل بديل</span>
+                <p>في PowerPoint، نبدأ بملف جديد، نضيف شريحة عناوين، ثم نصًا رئيسيًا، ثم صورة أو مخطط، ثم نستخدم تصميمًا متناسقًا، ثم نبدأ العرض.</p>
+                <ul>
+                  <li>عنوان واضح</li>
+                  <li>نص مختصر</li>
+                  <li>رسم أو صورة مناسبة</li>
+                  <li>تناسق الألوان</li>
+                </ul>
+              </div>
+            `
+          }
+        ]
+      },
+      {
+        title: 'الوحدة 9: ورشة تطبيقية متكاملة',
+        intro: 'إنشاء مجلد بحث جامعي وتنظيم الملف',
+        slides: [
+          {
+            title: 'المهمة النهائية',
+            html: `
+              <div class="card">
+                <span class="pill">الهدف</span>
+                <p>إنشاء مجلد رئيسي باسم <strong>Recherche_Universitaire</strong> يحتوي على مجلدات فرعية: Documents، Images، Presentation، Tableaux.</p>
+                <ul>
+                  <li>إنشاء مستند نصي أو Word</li>
+                  <li>حفظ نسخ مناسبة مثل PDF</li>
+                  <li>إعداد جدول بيانات Excel</li>
+                  <li>إنشاء عرض PowerPoint</li>
+                  <li>تنظيم الملفات داخل المجلدات</li>
+                </ul>
+              </div>
+            `
+          },
+          {
+            title: 'النتيجة المنتظرة',
+            html: `
+              <div class="card">
+                <span class="pill success">معايير النجاح</span>
+                <ul>
+                  <li>تم تنظيم المستندات في المجلد المناسب</li>
+                  <li>الملفات مسماة بوضوح</li>
+                  <li>تم حفظ نسخة PDF</li>
+                  <li>تمت إعادة تسمية الملفات ومقارنتها في المجلدات</li>
+                </ul>
+              </div>
+            `
+          },
+          {
+            title: 'الأخطاء الشائعة',
+            html: `
+              <div class="card">
+                <span class="pill danger">أخطاء</span>
+                <ul>
+                  <li>تخزين الملفات في المجلد الخاطئ</li>
+                  <li>تكرار الاسم</li>
+                  <li>نسخ ملف دون التأكد من محتواه</li>
+                  <li>إهمال حفظ نسخة احتياطية</li>
+                </ul>
+              </div>
+            `
+          }
+        ]
+      },
+      {
+        title: 'الوحدة 10: مراجعة عامة وتقويم',
+        intro: 'أسئلة قصيرة، تقييم ذاتي، واختبار نهائي',
+        slides: [
+          {
+            title: 'بنك أسئلة مختصر',
+            html: `
+              <div class="quiz-box" data-quiz="general-quiz">
+                <h4>سؤال 1: ما الفرق بين البيانات والمعلومة؟</h4>
+                <button class="option" data-correct="false">كلاهما نفس الشيء.</button>
+                <button class="option" data-correct="true">البيانات خام، والمعلومة ناتج تنظيمها.</button>
+                <button class="option" data-correct="false">المعلومة هي اسم التطبيق فقط.</button>
+                <div class="quiz-result"></div>
+              </div>
+            `
+          },
+          {
+            title: 'اختبار نهائي',
+            html: `
+              <div class="card">
+                <span class="pill success">تقييم</span>
+                <ul>
+                  <li>الطالب يعرف أساسيات الحاسوب والتعامل مع الملفات</li>
+                  <li>يستطيع التمييز بين الملفات والمجلدات</li>
+                  <li>يفهم دور Windows في تنظيم استخدامات الحاسوب</li>
+                  <li>يستطيع تنفيذ مهام بسيطة في التطبيقات المكتبية</li>
+                </ul>
+              </div>
+            `
+          }
+        ]
+      }
+    ];
+
+    const explorerFiles = [
+      { type: 'folder', name: 'Documents', icon: '📁' },
+      { type: 'folder', name: 'Images', icon: '📁' },
+      { type: 'file', name: 'memoire.docx', icon: '📄' },
+      { type: 'file', name: 'notes.txt', icon: '📄' },
+      { type: 'file', name: 'plan.xlsx', icon: '📊' }
+    ];
+
+    function renderNav() {
+      const nav = document.getElementById('unit-nav');
+      nav.innerHTML = units.map((unit, i) => `
+        <li>
+          <button class="nav-item ${i === state.unitIndex ? 'active' : ''}" data-unit-index="${i}">
+            <span>${i + 1}</span>
+            <span>${unit.title.split(':')[0]}</span>
+          </button>
+        </li>
+      `).join('');
+
+      document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.unitIndex = Number(btn.dataset.unitIndex);
+          state.slideIndex = 0;
+          saveState();
+          render();
+        });
+      });
+    }
+
+    function renderSlides() {
+      const container = document.getElementById('slides-container');
+      const unit = units[state.unitIndex];
+      const slidesHtml = unit.slides.map((slide, i) => `
+        <section class="slide ${i === state.slideIndex ? 'active' : ''}">
+          <div class="slide-header">
+            <h3>${slide.title}</h3>
+            <div class="slides-meta">${i + 1} / ${unit.slides.length}</div>
+          </div>
+          ${slide.html}
+        </section>
+      `).join('');
+
+      container.innerHTML = slidesHtml;
+      attachQuizHandlers();
+      attachSimHandlers();
+      renderDemoExplorer();
+    }
+
+    function render() {
+      const unit = units[state.unitIndex];
+      state.totalSlides = units.reduce((sum, u) => sum + u.slides.length, 0);
+      const seenBefore = units.slice(0, state.unitIndex).reduce((sum, u) => sum + u.slides.length, 0) + state.slideIndex + 1;
+      const percent = Math.round((seenBefore / state.totalSlides) * 100);
+
+      document.getElementById('top-title').textContent = unit.title;
+      document.getElementById('top-subtitle').textContent = unit.intro;
+      document.getElementById('progress-fill').style.width = percent + '%';
+      document.getElementById('progress-text').textContent = percent + '%';
+
+      renderNav();
+      renderSlides();
+      updateButtons();
+    }
+
+    function updateButtons() {
+      const currentSlidesInUnit = units[state.unitIndex].slides.length;
+      document.getElementById('prev-btn').disabled = state.slideIndex === 0 && state.unitIndex === 0;
+      document.getElementById('next-btn').textContent = state.slideIndex === currentSlidesInUnit - 1 && state.unitIndex === units.length - 1 ? 'إكمال' : 'التالي';
+    }
+
+    function goNext() {
+      const unit = units[state.unitIndex];
+      if (state.slideIndex < unit.slides.length - 1) {
+        state.slideIndex += 1;
+      } else if (state.unitIndex < units.length - 1) {
+        state.unitIndex += 1;
+        state.slideIndex = 0;
+      }
+      saveState();
+      render();
+    }
+
+    function goPrev() {
+      if (state.slideIndex > 0) {
+        state.slideIndex -= 1;
+      } else if (state.unitIndex > 0) {
+        state.unitIndex -= 1;
+        state.slideIndex = units[state.unitIndex].slides.length - 1;
+      }
+      saveState();
+      render();
+    }
+
+    function attachQuizHandlers() {
+      document.querySelectorAll('[data-quiz]').forEach(box => {
+        const quiz = box.dataset.quiz;
+        const options = box.querySelectorAll('.option');
+        const resultNode = box.querySelector('.quiz-result');
+
+        options.forEach(option => {
+          option.onclick = () => {
+            const isCorrect = option.dataset.correct === 'true';
+            options.forEach(o => {
+              o.disabled = true;
+              o.classList.remove('correct', 'wrong');
+              if (o.dataset.correct === 'true') o.classList.add('correct');
+              if (o === option && !isCorrect) o.classList.add('wrong');
+            });
+
+            resultNode.textContent = isCorrect ? 'إجابة صحيحة — ممتاز.' : 'إجابة غير صحيحة — راجع الشرح.';
+            resultNode.style.color = isCorrect ? 'var(--accent)' : 'var(--danger)';
+          };
+        });
+      });
+    }
+
+    function attachSimHandlers() {
+      document.querySelectorAll('.sim-icon').forEach(icon => {
+        icon.addEventListener('click', () => {
+          const out = document.getElementById('sim-output');
+          if (out) out.textContent = 'تم تحديد: ' + icon.dataset.info + ' — هذا عنصر أساسي في واجهة Windows، يساعد طالبك على التعرف على الأيقونات الأساسية.';
+        });
+      });
+    }
+
+    function renderDemoExplorer() {
+      const node = document.getElementById('demo-explorer');
+      if (!node) return;
+      node.innerHTML = explorerFiles.map(file => `
+        <div class="file-item">
+          <div class="icon">${file.icon}</div>
+          <span class="name">${file.name}</span>
+        </div>
+      `).join('');
+    }
+
+    document.getElementById('next-btn').addEventListener('click', goNext);
+    document.getElementById('prev-btn').addEventListener('click', goPrev);
+    document.getElementById('presentation-mode').addEventListener('click', () => {
+      document.body.classList.toggle('presentation-mode');
+      state.presentationMode = !state.presentationMode;
+      saveState();
+    });
+
+    document.getElementById('fullscreen').addEventListener('click', () => {
+      const el = document.documentElement;
+      if (!document.fullscreenElement) {
+        el.requestFullscreen?.();
+      } else {
+        document.exitFullscreen?.();
+      }
+    });
+
+    document.getElementById('toggle-sidebar').addEventListener('click', () => {
+      document.querySelector('.sidebar').style.display = document.querySelector('.sidebar').style.display === 'none' ? 'block' : 'none';
+    });
+
+    document.getElementById('show-help').addEventListener('click', () => {
+      alert('اختصارات: الأسهم يمين/يسار للتنقل، F لملء الشاشة، Home للبدء، End للنهاية.');
+    });
+
+    document.getElementById('reset-progress').addEventListener('click', () => {
+      state.unitIndex = 0;
+      state.slideIndex = 0;
+      localStorage.removeItem(state.storeKey);
+      render();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+        goNext();
+      }
+      if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        goPrev();
+      }
+      if (e.key.toLowerCase() === 'f') {
+        document.getElementById('fullscreen').click();
+      }
+      if (e.key === 'Home') {
+        state.unitIndex = 0;
+        state.slideIndex = 0;
+        render();
+      }
+      if (e.key === 'End') {
+        state.unitIndex = units.length - 1;
+        state.slideIndex = units[units.length - 1].slides.length - 1;
+        render();
+      }
+    });
+
+    function saveState() {
+      try {
+        localStorage.setItem(state.storeKey, JSON.stringify({ unitIndex: state.unitIndex, slideIndex: state.slideIndex, presentationMode: state.presentationMode }));
+      } catch (err) {
+        console.warn('تعذر حفظ التقدم محليًا:', err);
+      }
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(state.storeKey);
+        if (!raw) return;
+        const saved = JSON.parse(raw);
+        if (typeof saved.unitIndex === 'number') state.unitIndex = Math.min(saved.unitIndex, units.length - 1);
+        if (typeof saved.slideIndex === 'number') state.slideIndex = Math.min(saved.slideIndex, units[state.unitIndex].slides.length - 1);
+        state.presentationMode = !!saved.presentationMode;
+        if (state.presentationMode) document.body.classList.add('presentation-mode');
+      } catch (err) {
+        console.warn('تعذر قراءة التقدم المحفوظ:', err);
+      }
+    }
+
+    document.getElementById('create-folder-demo').addEventListener('click', () => {
+      const item = { type: 'folder', name: 'Recherche_Universitaire', icon: '📁' };
+      explorerFiles.unshift(item);
+      renderDemoExplorer();
+      alert('تم إنشاء مجلد جديد بنجاح.');
+    });
+    document.getElementById('rename-demo').addEventListener('click', () => {
+      if (explorerFiles.length) {
+        explorerFiles[0].name = 'Recherche_Universitaire_renamed';
+        renderDemoExplorer();
+      }
+    });
+    document.getElementById('delete-demo').addEventListener('click', () => {
+      if (explorerFiles.length) {
+        explorerFiles.splice(0, 1);
+        renderDemoExplorer();
+      }
+    });
+    document.getElementById('reset-demo').addEventListener('click', () => {
+      explorerFiles.length = 0;
+      explorerFiles.push(
+        { type: 'folder', name: 'Documents', icon: '📁' },
+        { type: 'folder', name: 'Images', icon: '📁' },
+        { type: 'file', name: 'memoire.docx', icon: '📄' },
+        { type: 'file', name: 'notes.txt', icon: '📄' },
+        { type: 'file', name: 'plan.xlsx', icon: '📊' }
+      );
+      renderDemoExplorer();
+    });
+
+    loadState();
+    render();
+  </script>
+</body>
+</html>
